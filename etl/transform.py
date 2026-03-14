@@ -6,8 +6,10 @@ standardization rules, validates quality, and saves Silver-layer output.
 
 from __future__ import annotations
 
+import argparse
 import re
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -175,18 +177,40 @@ def rename_columns_informatively(df: pd.DataFrame) -> pd.DataFrame:
 	return df.rename(columns=rename_map)
 
 
-def save_to_silver_db(df: pd.DataFrame) -> None:
-	"""Persist cleaned Silver dataset into SQLite instead of CSV."""
+def save_to_silver_db(df: pd.DataFrame, batch_id: str | None = None, append: bool = False) -> None:
+	"""Persist cleaned Silver dataset into SQLite with optional batch metadata."""
 	SILVER_DIR.mkdir(parents=True, exist_ok=True)
 	df_db = rename_columns_informatively(df)
+	if batch_id:
+		df_db["batch_id"] = batch_id
+	df_db["processed_at_utc"] = datetime.now(timezone.utc).isoformat()
+
+	write_mode = "append" if append else "replace"
 	with sqlite3.connect(SILVER_DB_PATH) as conn:
-		df_db.to_sql(SILVER_TABLE_NAME, conn, if_exists="replace", index=False)
+		if write_mode == "append":
+			table_exists = conn.execute(
+				"SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+				(SILVER_TABLE_NAME,),
+			).fetchone()
+			if table_exists:
+				existing_cols = {
+					row[1] for row in conn.execute(f"PRAGMA table_info({SILVER_TABLE_NAME})").fetchall()
+				}
+				for col in df_db.columns:
+					if col not in existing_cols:
+						conn.execute(f'ALTER TABLE {SILVER_TABLE_NAME} ADD COLUMN "{col}" TEXT')
+		df_db.to_sql(SILVER_TABLE_NAME, conn, if_exists=write_mode, index=False)
 
 
-def clean_data() -> pd.DataFrame:
+def clean_data(
+	source_path: Path | None = None,
+	source_sheet: str = "E Comm",
+	batch_id: str | None = None,
+	append_to_silver: bool = False,
+) -> pd.DataFrame:
 	"""Main transform workflow to produce Silver-layer cleaned dataset."""
 	# 1) Load extracted dataset from EXTRACT stage
-	df = extract_data()
+	df = extract_data(file_path=source_path, sheet_name=source_sheet)
 
 	# 2) Print initial diagnostics
 	print_diagnostics(df, "Initial Dataset Diagnostics")
@@ -215,7 +239,7 @@ def clean_data() -> pd.DataFrame:
 	validate_cleaned_dataset(df)
 
 	# 9) Save Silver layer output as SQLite table
-	save_to_silver_db(df)
+	save_to_silver_db(df, batch_id=batch_id, append=append_to_silver)
 
 	# Final diagnostics and confirmation message
 	print_diagnostics(df, "Cleaned Dataset Diagnostics")
@@ -224,9 +248,46 @@ def clean_data() -> pd.DataFrame:
 	print(f"Columns: {df.shape[1]}")
 	print(f"Saved to DB: {SILVER_DB_PATH}")
 	print(f"Table name: {SILVER_TABLE_NAME}")
+	if batch_id:
+		print(f"Batch ID: {batch_id}")
 
 	return df
 
 
+def _build_cli() -> argparse.ArgumentParser:
+	parser = argparse.ArgumentParser(description="Run ETL TRANSFORM stage for raw or batch input.")
+	parser.add_argument(
+		"--input-path",
+		type=str,
+		default=None,
+		help="Optional CSV/Excel path for batch input.",
+	)
+	parser.add_argument(
+		"--input-sheet",
+		type=str,
+		default="E Comm",
+		help="Excel sheet name when --input-path points to .xlsx/.xls.",
+	)
+	parser.add_argument(
+		"--batch-id",
+		type=str,
+		default=None,
+		help="Optional batch identifier to persist alongside Silver data.",
+	)
+	parser.add_argument(
+		"--append",
+		action="store_true",
+		help="Append to Silver table instead of replacing it.",
+	)
+	return parser
+
+
 if __name__ == "__main__":
-	clean_data()
+	args = _build_cli().parse_args()
+	input_path = Path(args.input_path) if args.input_path else None
+	clean_data(
+		source_path=input_path,
+		source_sheet=args.input_sheet,
+		batch_id=args.batch_id,
+		append_to_silver=args.append,
+	)

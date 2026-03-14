@@ -10,6 +10,7 @@ This module is intentionally designed as a reusable pipeline component:
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import Iterable
 
@@ -133,36 +134,48 @@ def inspect_datatypes(df: pd.DataFrame, expected: dict[str, str]) -> None:
 # ---------------------------------------------------------------------------
 # Extract logic
 # ---------------------------------------------------------------------------
-def load_excel_dataset(file_path: Path) -> pd.DataFrame:
-	"""Load an Excel dataset into a DataFrame with robust error handling."""
-	validate_file_exists(file_path)
+def load_dataset(file_path: Path, sheet_name: str = SOURCE_SHEET_NAME) -> pd.DataFrame:
+    """Load a CSV or Excel dataset into a DataFrame with robust error handling."""
+    validate_file_exists(file_path)
 
-	logger.info("Reading Excel sheet: %s", SOURCE_SHEET_NAME)
+    try:
+        suffix = file_path.suffix.lower()
+        if suffix == ".csv":
+            logger.info("Reading CSV source: %s", file_path)
+            df = pd.read_csv(file_path)
+        elif suffix in {".xlsx", ".xls"}:
+            logger.info("Reading Excel sheet: %s", sheet_name)
+            df = pd.read_excel(file_path, sheet_name=sheet_name)
+        else:
+            raise ValueError(
+                f"Unsupported source format '{suffix}'. Supported: .csv, .xlsx, .xls"
+            )
+    except ValueError as exc:
+        raise ValueError(
+            f"Failed to parse source file '{file_path}'. Check file integrity and sheet name."
+        ) from exc
+    except Exception as exc:
+        raise RuntimeError(
+            f"Unexpected error while reading '{file_path}': {exc}"
+        ) from exc
 
-	try:
-		df = pd.read_excel(file_path, sheet_name=SOURCE_SHEET_NAME)
-	except ValueError as exc:
-		raise ValueError(
-			f"Failed to parse Excel file '{file_path}'. Check file integrity or sheet name."
-		) from exc
-	except Exception as exc:
-		raise RuntimeError(
-			f"Unexpected error while reading '{file_path}': {exc}"
-		) from exc
-
-	return df
+    return df
 
 
-def extract_data(file_path: Path = RAW_DATA_PATH) -> pd.DataFrame:
+def extract_data(file_path: Path | None = None, sheet_name: str = SOURCE_SHEET_NAME) -> pd.DataFrame:
     """Main extract function for ETL orchestration.
 
     Returns:
         pd.DataFrame: Validated raw input dataset.
     """
+    if file_path is None:
+        env_path = os.getenv("BATCH_INPUT_PATH")
+        file_path = Path(env_path) if env_path else RAW_DATA_PATH
+
     logger.info("Starting EXTRACT stage.")
     logger.info("Source path: %s", file_path)
 
-    df = load_excel_dataset(file_path)
+    df = load_dataset(file_path, sheet_name=sheet_name)
 
     validate_schema_quality(df)
     validate_required_columns(df, REQUIRED_COLUMNS)
@@ -183,22 +196,22 @@ def extract_data(file_path: Path = RAW_DATA_PATH) -> pd.DataFrame:
 # CLI entrypoint
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-	try:
-		extracted_df = extract_data()
+    try:
+        extracted_df = extract_data()
 
-		logger.info(
-			"Returned DataFrame with %d rows for downstream stages.",
-			len(extracted_df),
-		)
+        logger.info(
+            "Returned DataFrame with %d rows for downstream stages.",
+            len(extracted_df),
+        )
 
-	except FileNotFoundError as exc:
-		logger.error("File error during extraction: %s", exc)
-		raise
+    except FileNotFoundError as exc:
+        logger.error("File error during extraction: %s", exc)
+        raise
 
-	except ValueError as exc:
-		logger.error("Validation error during extraction: %s", exc)
-		raise
+    except ValueError as exc:
+        logger.error("Validation error during extraction: %s", exc)
+        raise
 
-	except Exception as exc:
-		logger.exception("Fatal error in EXTRACT stage: %s", exc)
-		raise
+    except Exception as exc:
+        logger.exception("Fatal error in EXTRACT stage: %s", exc)
+        raise
