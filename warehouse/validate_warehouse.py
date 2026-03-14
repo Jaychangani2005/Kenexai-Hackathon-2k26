@@ -7,15 +7,16 @@ from pathlib import Path
 
 
 WAREHOUSE_DB = Path("data/gold/warehouse.db")
-INPUT_CSV = Path("data/silver/cleaned_data.csv")
-FACT_TABLE = "fact_customer_behavior"
+SILVER_DB = Path("data/silver/silver_layer.db")
+SILVER_TABLE = "silver_customer_churn_curated"
+FACT_TABLE = "fact_customer_churn_metrics"
 
 DIMENSION_KEY_MAP = {
-    "dim_customer": "customer_key",
-    "dim_device": "device_key",
-    "dim_payment": "payment_key",
-    "dim_order_category": "category_key",
-    "dim_time": "time_key",
+    "dim_customer_profile": "customer_profile_key",
+    "dim_login_device": "login_device_key",
+    "dim_payment_method": "payment_method_key",
+    "dim_order_category": "order_category_key",
+    "dim_customer_time_window": "customer_time_key",
 }
 
 
@@ -66,13 +67,15 @@ def validate_fact(conn: sqlite3.Connection, fact_table: str, active_dims: dict[s
 
     all_passed = True
 
-    if INPUT_CSV.exists():
-        with INPUT_CSV.open("r", encoding="utf-8") as f:
-            input_rows = sum(1 for _ in f) - 1
-        if fact_rows == input_rows:
-            print(f"[PASS] Fact row count matches input CSV ({input_rows})")
+    if SILVER_DB.exists():
+        with sqlite3.connect(SILVER_DB) as silver_conn:
+            silver_rows = silver_conn.execute(
+                f"SELECT COUNT(*) FROM {SILVER_TABLE}"
+            ).fetchone()[0]
+        if fact_rows == silver_rows:
+            print(f"[PASS] Fact row count matches Silver table ({silver_rows})")
         else:
-            print(f"[FAIL] Fact row count mismatch: fact={fact_rows}, input={input_rows}")
+            print(f"[FAIL] Fact row count mismatch: fact={fact_rows}, silver={silver_rows}")
             all_passed = False
 
     for dim_table, fk_name in active_dims.items():
