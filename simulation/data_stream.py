@@ -9,6 +9,8 @@ from __future__ import annotations
 import argparse
 import logging
 import math
+import re
+import sqlite3
 import time
 from pathlib import Path
 from typing import Iterator
@@ -23,8 +25,33 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_FILE = PROJECT_ROOT / "data" / "raw" / "E Commerce Dataset.xlsx"
 SOURCE_SHEET_NAME = "E Comm"
 BRONZE_DIR = PROJECT_ROOT / "data" / "bronze"
+BRONZE_DB_PATH = BRONZE_DIR / "bronze_layer.db"
+BRONZE_TABLE_NAME = "bronze_customer_churn_events"
 DEFAULT_BATCH_SIZE = 100
 DEFAULT_DELAY_SECONDS = 5
+
+INFORMATIVE_COLUMN_MAP = {
+    "CustomerID": "customer_id",
+    "Churn": "churn_flag",
+    "Tenure": "customer_tenure_months",
+    "PreferredLoginDevice": "preferred_login_device",
+    "CityTier": "city_tier",
+    "WarehouseToHome": "warehouse_to_home_distance",
+    "PreferredPaymentMode": "preferred_payment_mode",
+    "Gender": "customer_gender",
+    "HourSpendOnApp": "hours_spent_on_app",
+    "NumberOfDeviceRegistered": "registered_device_count",
+    "PreferedOrderCat": "preferred_order_category",
+    "SatisfactionScore": "satisfaction_score",
+    "MaritalStatus": "marital_status",
+    "NumberOfAddress": "address_count",
+    "Complain": "complaint_flag",
+    "OrderAmountHikeFromlastYear": "order_amount_hike_from_last_year",
+    "CouponUsed": "coupon_used_count",
+    "OrderCount": "order_count",
+    "DaySinceLastOrder": "days_since_last_order",
+    "CashbackAmount": "cashback_amount",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -64,6 +91,22 @@ def iter_batches(df: pd.DataFrame, batch_size: int) -> Iterator[pd.DataFrame]:
         yield df.iloc[start : start + batch_size]
 
 
+def _to_snake_case(name: str) -> str:
+    """Convert arbitrary column names into readable snake_case fallback names."""
+    name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+    name = re.sub(r"[^A-Za-z0-9]+", "_", name)
+    return name.strip("_").lower()
+
+
+def rename_columns_informatively(df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize source column names into informative Bronze table columns."""
+    rename_map = {
+        col: INFORMATIVE_COLUMN_MAP.get(col, _to_snake_case(col))
+        for col in df.columns
+    }
+    return df.rename(columns=rename_map)
+
+
 # ---------------------------------------------------------------------------
 # Streaming workflow
 # ---------------------------------------------------------------------------
@@ -72,7 +115,7 @@ def stream_data_batches(
     delay_seconds: int = DEFAULT_DELAY_SECONDS,
     bronze_dir: Path = BRONZE_DIR,
 ) -> None:
-    """Stream the source dataset into Bronze layer batch CSV files."""
+    """Stream the source dataset into a Bronze-layer SQLite table."""
     if batch_size <= 0:
         raise ValueError("batch_size must be greater than 0")
     if delay_seconds < 0:
@@ -89,22 +132,31 @@ def stream_data_batches(
     logger.info("Batch size: %d", batch_size)
     logger.info("Total batches to stream: %d", total_batches)
 
-    for batch_number, batch_df in enumerate(iter_batches(df, batch_size), start=1):
-        output_path = bronze_dir / f"batch_{batch_number}.csv"
-        batch_df.to_csv(output_path, index=False)
+    with sqlite3.connect(BRONZE_DB_PATH) as conn:
+        conn.execute(f"DROP TABLE IF EXISTS {BRONZE_TABLE_NAME}")
+        logger.info("Reset Bronze table: %s", BRONZE_TABLE_NAME)
 
-        logger.info(
-            "Streaming batch %d/%d -> saved to %s",
-            batch_number,
-            total_batches,
-            output_path,
-        )
+        for batch_number, batch_df in enumerate(iter_batches(df, batch_size), start=1):
+            batch_df = rename_columns_informatively(batch_df.copy())
+            batch_df["bronze_batch_id"] = batch_number
+            batch_df["bronze_emitted_at_utc"] = pd.Timestamp.utcnow().isoformat()
+            batch_df.to_sql(BRONZE_TABLE_NAME, conn, if_exists="append", index=False)
 
-        # Sleep between batches to emulate continuous incoming data.
-        if batch_number < total_batches:
-            time.sleep(delay_seconds)
+            logger.info(
+                "Streaming batch %d/%d -> appended to %s (%d rows)",
+                batch_number,
+                total_batches,
+                BRONZE_TABLE_NAME,
+                len(batch_df),
+            )
+
+            # Sleep between batches to emulate continuous incoming data.
+            if batch_number < total_batches:
+                time.sleep(delay_seconds)
 
     logger.info("Data simulation completed successfully.")
+    logger.info("Bronze DB: %s", BRONZE_DB_PATH)
+    logger.info("Bronze table: %s", BRONZE_TABLE_NAME)
 
 
 # ---------------------------------------------------------------------------

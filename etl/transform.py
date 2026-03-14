@@ -6,6 +6,8 @@ standardization rules, validates quality, and saves Silver-layer output.
 
 from __future__ import annotations
 
+import re
+import sqlite3
 from pathlib import Path
 
 import pandas as pd
@@ -16,7 +18,31 @@ from extract import extract_data
 # Silver layer output path (Medallion Architecture)
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SILVER_DIR = PROJECT_ROOT / "data" / "silver"
-SILVER_OUTPUT_PATH = SILVER_DIR / "cleaned_data.csv"
+SILVER_DB_PATH = SILVER_DIR / "silver_layer.db"
+SILVER_TABLE_NAME = "silver_customer_churn_curated"
+
+INFORMATIVE_COLUMN_MAP = {
+	"CustomerID": "customer_id",
+	"Churn": "churn_flag",
+	"Tenure": "customer_tenure_months",
+	"PreferredLoginDevice": "preferred_login_device",
+	"CityTier": "city_tier",
+	"WarehouseToHome": "warehouse_to_home_distance",
+	"PreferredPaymentMode": "preferred_payment_mode",
+	"Gender": "customer_gender",
+	"HourSpendOnApp": "hours_spent_on_app",
+	"NumberOfDeviceRegistered": "registered_device_count",
+	"PreferedOrderCat": "preferred_order_category",
+	"SatisfactionScore": "satisfaction_score",
+	"MaritalStatus": "marital_status",
+	"NumberOfAddress": "address_count",
+	"Complain": "complaint_flag",
+	"OrderAmountHikeFromlastYear": "order_amount_hike_from_last_year",
+	"CouponUsed": "coupon_used_count",
+	"OrderCount": "order_count",
+	"DaySinceLastOrder": "days_since_last_order",
+	"CashbackAmount": "cashback_amount",
+}
 
 
 # Important columns defined by business/data requirements
@@ -41,6 +67,44 @@ CATEGORICAL_COLUMNS = [
 	"PreferedOrderCat",
 	"MaritalStatus",
 ]
+
+
+def _canonicalize_text(value: object) -> str:
+	"""Normalize free-text categorical values for robust matching."""
+	if pd.isna(value):
+		return ""
+	text = str(value).strip().lower()
+	text = re.sub(r"\s+", " ", text)
+	return text
+
+
+def standardize_business_categories(df: pd.DataFrame) -> pd.DataFrame:
+	"""Standardize synonymous category labels into business-approved canonical values."""
+	mappings = {
+		"PreferredLoginDevice": {
+			"mobile": "Mobile Phone",
+			"phone": "Mobile Phone",
+			"mobile phone": "Mobile Phone",
+		},
+		"PreferredPaymentMode": {
+			"cc": "Credit Card",
+			"credit card": "Credit Card",
+			"cod": "Cash on Delivery",
+			"cash on delivery": "Cash on Delivery",
+		},
+		"PreferedOrderCat": {
+			"mobile": "Mobile Phone",
+			"mobile phone": "Mobile Phone",
+		},
+	}
+
+	for col, mapping in mappings.items():
+		if col in df.columns:
+			df[col] = df[col].apply(
+				lambda value: mapping.get(_canonicalize_text(value), value)
+			)
+
+	return df
 
 
 def print_diagnostics(df: pd.DataFrame, title: str) -> None:
@@ -95,6 +159,30 @@ def validate_cleaned_dataset(df: pd.DataFrame) -> None:
 		)
 
 
+def _to_snake_case(name: str) -> str:
+	"""Convert arbitrary column name into a readable snake_case fallback."""
+	name = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", name)
+	name = re.sub(r"[^A-Za-z0-9]+", "_", name)
+	return name.strip("_").lower()
+
+
+def rename_columns_informatively(df: pd.DataFrame) -> pd.DataFrame:
+	"""Rename columns to business-readable warehouse-friendly names."""
+	rename_map = {
+		col: INFORMATIVE_COLUMN_MAP.get(col, _to_snake_case(col))
+		for col in df.columns
+	}
+	return df.rename(columns=rename_map)
+
+
+def save_to_silver_db(df: pd.DataFrame) -> None:
+	"""Persist cleaned Silver dataset into SQLite instead of CSV."""
+	SILVER_DIR.mkdir(parents=True, exist_ok=True)
+	df_db = rename_columns_informatively(df)
+	with sqlite3.connect(SILVER_DB_PATH) as conn:
+		df_db.to_sql(SILVER_TABLE_NAME, conn, if_exists="replace", index=False)
+
+
 def clean_data() -> pd.DataFrame:
 	"""Main transform workflow to produce Silver-layer cleaned dataset."""
 	# 1) Load extracted dataset from EXTRACT stage
@@ -111,6 +199,7 @@ def clean_data() -> pd.DataFrame:
 
 	# 4 & 5) Fix numeric dtypes and fill missing values
 	df = coerce_numeric_columns(df, NUMERIC_COLUMNS)
+	df = standardize_business_categories(df)
 	df = fill_missing_values(df)
 
 	# 6) Outlier filtering
@@ -125,16 +214,16 @@ def clean_data() -> pd.DataFrame:
 	# 8) Validate cleaned dataset quality
 	validate_cleaned_dataset(df)
 
-	# 9) Save Silver layer output
-	SILVER_DIR.mkdir(parents=True, exist_ok=True)
-	df.to_csv(SILVER_OUTPUT_PATH, index=False)
+	# 9) Save Silver layer output as SQLite table
+	save_to_silver_db(df)
 
 	# Final diagnostics and confirmation message
 	print_diagnostics(df, "Cleaned Dataset Diagnostics")
 	print("\nCleaned dataset saved successfully.")
 	print(f"Rows: {df.shape[0]}")
 	print(f"Columns: {df.shape[1]}")
-	print(f"Saved to: {SILVER_OUTPUT_PATH}")
+	print(f"Saved to DB: {SILVER_DB_PATH}")
+	print(f"Table name: {SILVER_TABLE_NAME}")
 
 	return df
 
