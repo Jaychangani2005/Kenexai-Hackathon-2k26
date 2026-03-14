@@ -1,0 +1,101 @@
+CustomerID,Churn,Tenure,PreferredLoginDevice,CityTier,WarehouseToHome,PreferredPaymentMode,Gender,HourSpendOnApp,NumberOfDeviceRegistered,PreferedOrderCat,SatisfactionScore,MaritalStatus,NumberOfAddress,Complain,OrderAmountHikeFromlastYear,CouponUsed,OrderCount,DaySinceLastOrder,CashbackAmount
+52501,0,12.0,Phone,1,9.0,CC,Male,,4,Laptop & Accessory,3,Married,1,0,15.0,0.0,1.0,7.0,130.69
+52502,0,13.0,Mobile Phone,1,21.0,Debit Card,Female,3.0,4,Fashion,3,Married,2,0,13.0,6.0,14.0,12.0,204.35
+52503,0,8.0,Computer,1,14.0,Debit Card,Female,2.0,3,Laptop & Accessory,3,Married,2,0,12.0,0.0,2.0,9.0,141.48
+52504,0,10.0,Mobile Phone,1,25.0,Debit Card,Male,2.0,3,Laptop & Accessory,3,Married,4,0,17.0,0.0,1.0,2.0,157.68
+52505,0,12.0,Computer,1,10.0,Credit Card,Female,2.0,3,Laptop & Accessory,3,Single,1,0,13.0,3.0,3.0,8.0,150.42
+52506,0,18.0,Mobile Phone,1,8.0,UPI,Female,2.0,4,Laptop & Accessory,1,Married,2,0,19.0,3.0,3.0,9.0,157.7
+52507,0,11.0,Mobile Phone,1,8.0,Credit Card,Female,2.0,4,Fashion,3,Married,4,1,19.0,0.0,1.0,2.0,177.56
+52508,1,0.0,Mobile Phone,3,16.0,Credit Card,Male,2.0,4,Fashion,5,Married,10,0,17.0,0.0,6.0,0.0,203.06
+52509,0,10.0,Phone,1,16.0,Credit Card,Female,3.0,3,Mobile Phone,4,Married,2,0,11.0,4.0,7.0,7.0,139.36
+52510,0,13.0,Mobile Phone,1,22.0,Debit Card,Female,2.0,3,Fashion,1,Single,7,1,15.0,3.0,3.0,3.0,179.45
+52511,0,17.0,Computer,2,7.0,UPI,Male,2.0,3,Laptop & Accessory,1,Married,5,1,11.0,1.0,1.0,2.0,157.43
+52512,0,21.0,Computer,1,10.0,Credit Card,Male,2.0,4,Grocery,1,Married,3,0,25.0,0.0,,2.0,252.01999999999998
+52513,1,0.0,Mobile Phone,3,21.0,Credit Card,Male,2.0,5,Laptop & Accessory,1,Married,7,1,14.0,0.0,2.0,2.0,154.4
+52514,0,0.0,Computer,1,8.0,COD,Female,2.0,3,Mobile Phone,1,Single,2,1,13.0,0.0,1.0,3.0,137.6
+52515,0,0.0,Phone,1,14.0,Credit Card,Female,2.0,1,Mobile,3,Married,8,0,17.0,0.0,1.0,2.0,135.17
+52516,0,0.0,Computer,1,,CC,Male,2.0,3,Mobile,1,Single,3,0,13.0,0.0,1.0,2.0,125.80000000000001
+52517,1,,Phone,1,13.0,Debit Card,Male,3.0,3,Mobile,5,Single,4,1,14.0,0.0,1.0,3.0,121.66
+52518,0,2.0,Mobile Phone,3,16.0,Credit Card,Male,2.0,4,Laptop & Accessory,3,Single,10,0,11.0,1.0,1.0,4.0,158.69
+52519,0,9.0,Mobile Phone,1,11.0,Debit Card,Female,2.0,3,Fashion,5,Married,5,0,12.0,1.0,1.0,2.0,180.08
+52520,0,0.0,Computer,1,8.0,Debit Card,Male,3.0,1,Laptop & Accessory,3,Married,2,0,17.0,1.0,1.0,7.0,152.06
+52521,0,12.0,Mobile Phone,1,18.0,Credit Card,Male,3.0,3,Laptop & Accessory,4,Married,5,0,21.0,1.0,1.0,0.0,152.95
+52522,0,22.0,Mobile Phone,1,28.0,UPI,Female,3.0,3,Grocery,4,Married,4,0,16.0,,1.0,2.0,264.13
+52523,0,23.0,Mobile Phone,1,23.0,Debit Card,Female,2.0,4,Fashion,5,Married,6,0,15.0,0.0,,11.0,232.69
+52524,0,0.0,Phone,3,8.0,CC,Female,,3,Mobile,3,Single,2,0,19.0,0.0,2.0,2.0,127.83000000000001
+52525,0,7.0,Mobile Phone,1,9.0,Debit Card,Female,3.0,3,Laptop & Accessory,4,Married,2,0,12.0,1.0,7.0,9.0,154.33
+52526,0,,Mobile Phone,1,13.0,Debit Card,Male,3.0,3,Mobile,4,Single,3,0,11.0,0.0,1.0,3.0,120.13
+52527,0,22.0,Mobile Phone,1,12.0,Debit Card,Female,2.0,4,Grocery,3,Married,3,1,19.0,2.0,,12.0,239.66000000000003
+52528,0,9.0,Computer,1,7.0,Credit Card,Female,2.0,4,Laptop & Accessory,3,Married,1,0,15.0,0.0,1.0,2.0,143.74
+52529,0,9.0,Mobile Phone,1,9.0,Debit Card,Male,3.0,1,Laptop & Accessory,5,Married,7,0,20.0,0.0,1.0,4.0,168.42
+52530,0,27.0,Mobile Phone,1,28.0,Credit Card,Female,3.0,3,Grocery,3,Married,4,0,25.0,,4.0,7.0,274.26
+52531,0,16.0,Mobile Phone,1,21.0,Debit Card,Male,3.0,4,Grocery,3,Married,2,0,24.0,,6.0,11.0,276.03
+52532,1,0.0,Computer,3,18.0,UPI,Male,2.0,3,Laptop & Accessory,1,Single,4,1,24.0,5.0,6.0,7.0,145.81
+52533,0,11.0,Computer,1,7.0,Debit Card,Male,2.0,3,Laptop & Accessory,1,Married,8,0,15.0,1.0,2.0,9.0,147.35
+52534,0,2.0,Phone,3,11.0,Credit Card,Male,2.0,4,Laptop & Accessory,4,Married,2,1,13.0,0.0,1.0,9.0,141.87
+52535,0,6.0,Mobile Phone,3,8.0,Credit Card,Male,3.0,3,Laptop & Accessory,1,Married,2,0,14.0,1.0,1.0,4.0,155.05
+52536,0,5.0,Mobile Phone,1,8.0,Credit Card,Male,2.0,3,Laptop & Accessory,4,Married,1,0,13.0,1.0,1.0,6.0,154.7
+52537,0,4.0,Mobile Phone,3,11.0,Debit Card,Female,3.0,3,Laptop & Accessory,1,Married,2,0,11.0,0.0,1.0,2.0,154.76
+52538,0,22.0,Phone,1,,CC,Female,3.0,3,Mobile,5,Married,5,1,16.0,0.0,2.0,2.0,125.87
+52539,0,11.0,Computer,1,,CC,Female,2.0,4,Mobile,4,Single,2,0,22.0,0.0,3.0,3.0,124.4
+52540,0,20.0,Mobile Phone,3,8.0,Debit Card,Female,2.0,1,Grocery,4,Married,7,0,14.0,1.0,,2.0,259.72
+52541,0,22.0,Mobile Phone,1,7.0,Debit Card,Male,2.0,3,Grocery,3,Single,5,0,14.0,1.0,,0.0,253.79000000000002
+52542,0,14.0,Mobile Phone,3,29.0,Debit Card,Male,3.0,3,Fashion,3,Single,4,1,16.0,0.0,1.0,2.0,170.82
+52543,0,0.0,Phone,3,15.0,Debit Card,Male,,3,Mobile,5,Single,2,0,11.0,0.0,1.0,2.0,127.28
+52544,0,6.0,Computer,3,22.0,Debit Card,Female,2.0,3,Laptop & Accessory,1,Married,2,1,25.0,0.0,1.0,2.0,153.68
+52545,0,9.0,Mobile Phone,1,32.0,Debit Card,Male,3.0,3,Laptop & Accessory,3,Married,7,0,14.0,1.0,1.0,2.0,153.47
+52546,0,17.0,Phone,2,7.0,Debit Card,Female,2.0,3,Mobile,1,Married,5,1,18.0,2.0,2.0,2.0,131.95
+52547,1,0.0,Phone,1,14.0,Credit Card,Male,3.0,4,Mobile Phone,3,Single,2,1,11.0,1.0,1.0,2.0,139.89
+52548,0,11.0,Phone,1,10.0,CC,Female,2.0,3,Mobile,3,Married,8,0,19.0,0.0,1.0,0.0,133.06
+52549,0,26.0,Mobile Phone,1,30.0,Credit Card,Male,2.0,1,Fashion,1,Married,4,0,15.0,0.0,1.0,2.0,170.05
+52550,1,11.0,Computer,3,,CC,Female,3.0,3,Mobile,3,Married,3,1,11.0,1.0,7.0,7.0,126.55000000000001
+52551,1,,Mobile Phone,1,8.0,Debit Card,Male,3.0,3,Mobile Phone,4,Single,2,0,12.0,0.0,1.0,0.0,113.93
+52552,0,0.0,Computer,1,,CC,Male,3.0,3,Mobile,1,Single,2,0,20.0,0.0,5.0,7.0,125.69999999999999
+52553,0,28.0,Phone,1,28.0,COD,Male,3.0,4,Mobile,4,Married,6,0,12.0,1.0,1.0,2.0,135.37
+52554,0,7.0,Phone,1,11.0,Credit Card,Male,2.0,4,Laptop & Accessory,1,Married,2,0,14.0,0.0,4.0,13.0,139.86
+52555,0,30.0,Mobile Phone,1,7.0,Credit Card,Male,3.0,5,Fashion,1,Married,4,0,20.0,1.0,1.0,0.0,208.82999999999998
+52556,0,,Phone,1,27.0,CC,Male,3.0,1,Mobile,4,Married,2,0,18.0,0.0,2.0,13.0,120.28
+52557,0,10.0,Computer,3,7.0,Credit Card,Male,2.0,5,Laptop & Accessory,1,Married,2,0,14.0,1.0,1.0,3.0,195.25
+52558,0,7.0,Phone,1,25.0,Debit Card,Female,,4,Mobile,1,Married,2,0,12.0,1.0,8.0,7.0,129.29
+52559,1,,Phone,3,13.0,Debit Card,Male,3.0,3,Mobile,1,Married,2,1,21.0,1.0,1.0,2.0,122.75
+52560,0,17.0,Mobile Phone,1,8.0,Debit Card,Female,3.0,1,Fashion,1,Married,2,1,19.0,1.0,6.0,7.0,178.79
+52561,0,8.0,Computer,1,8.0,Credit Card,Male,3.0,4,Mobile Phone,1,Single,1,1,14.0,1.0,1.0,4.0,149.3
+52562,0,16.0,Mobile Phone,3,8.0,Credit Card,Male,3.0,3,Laptop & Accessory,1,Married,2,1,17.0,3.0,8.0,8.0,178.47
+52563,0,0.0,Phone,1,15.0,Credit Card,Male,3.0,1,Mobile Phone,3,Married,2,0,16.0,0.0,1.0,4.0,144.01
+52564,0,14.0,Mobile Phone,3,12.0,E wallet,Male,2.0,3,Fashion,3,Single,2,0,12.0,3.0,8.0,7.0,192.41
+52565,0,2.0,Phone,1,15.0,CC,Female,,3,Mobile,3,Married,10,0,17.0,0.0,1.0,2.0,129.74
+52566,0,9.0,Phone,3,8.0,Debit Card,Female,2.0,3,Laptop & Accessory,1,Single,4,0,15.0,6.0,6.0,7.0,145.02
+52567,0,18.0,Computer,1,7.0,Debit Card,Male,3.0,4,Fashion,3,Married,4,0,23.0,4.0,14.0,4.0,207.48000000000002
+52568,1,,Mobile Phone,2,28.0,UPI,Male,2.0,5,Mobile Phone,3,Married,2,0,11.0,0.0,1.0,0.0,115.55000000000001
+52569,1,10.0,Computer,3,15.0,Debit Card,Male,2.0,5,Grocery,3,Married,8,0,11.0,6.0,14.0,,229.36
+52570,0,,Phone,1,23.0,CC,Male,3.0,5,Mobile,3,Married,2,0,15.0,1.0,1.0,2.0,123.05000000000001
+52571,0,18.0,Mobile Phone,1,34.0,Cash on Delivery,Female,2.0,4,Grocery,4,Single,2,0,11.0,,8.0,6.0,267.04
+52572,0,5.0,Computer,1,16.0,Debit Card,Male,2.0,3,Mobile,3,Married,7,0,13.0,0.0,1.0,3.0,134.33
+52573,0,4.0,Phone,1,8.0,Debit Card,Male,3.0,3,Mobile,3,Married,2,0,14.0,1.0,1.0,3.0,134.77
+52574,0,14.0,Computer,2,10.0,UPI,Male,2.0,5,Laptop & Accessory,4,Married,7,0,19.0,0.0,1.0,2.0,164.3
+52575,0,13.0,Mobile Phone,1,14.0,Debit Card,Female,3.0,3,Laptop & Accessory,5,Married,3,1,16.0,1.0,1.0,0.0,165.16
+52576,0,0.0,Phone,1,35.0,Credit Card,Male,3.0,3,Mobile Phone,5,Married,2,0,13.0,1.0,1.0,2.0,139.07
+52577,0,19.0,Mobile Phone,1,19.0,Debit Card,Male,2.0,3,Laptop & Accessory,4,Single,7,0,14.0,1.0,1.0,9.0,155.62
+52578,0,8.0,Mobile Phone,1,33.0,Debit Card,Male,2.0,3,Laptop & Accessory,3,Married,3,0,16.0,1.0,1.0,7.0,168.83
+52579,0,3.0,Phone,1,22.0,Debit Card,Male,,3,Mobile,1,Married,2,0,12.0,0.0,1.0,8.0,128.62
+52580,0,20.0,Computer,3,8.0,E wallet,Male,2.0,3,Laptop & Accessory,4,Married,8,0,11.0,0.0,1.0,0.0,149.78
+52581,0,19.0,Mobile Phone,3,8.0,Debit Card,Male,3.0,3,Fashion,1,Married,5,1,12.0,0.0,1.0,3.0,203.68
+52582,1,0.0,Mobile Phone,3,19.0,E wallet,Male,3.0,4,Laptop & Accessory,5,Married,6,1,13.0,1.0,2.0,2.0,161.34
+52583,1,0.0,Mobile Phone,3,7.0,Debit Card,Male,2.0,5,Laptop & Accessory,4,Single,7,0,15.0,0.0,1.0,0.0,167.35
+52584,0,0.0,Phone,1,10.0,CC,Female,2.0,3,Mobile,4,Single,2,0,13.0,0.0,1.0,2.0,132.95
+52585,0,4.0,Computer,1,30.0,COD,Female,1.0,3,Laptop & Accessory,1,Single,3,0,20.0,0.0,1.0,4.0,152.38
+52586,0,12.0,Computer,1,7.0,Debit Card,Male,3.0,3,Laptop & Accessory,1,Married,2,1,15.0,0.0,5.0,8.0,164.72
+52587,0,5.0,Mobile Phone,3,25.0,Debit Card,Male,3.0,5,Fashion,3,Married,4,0,13.0,0.0,1.0,2.0,196.1
+52588,0,13.0,Mobile Phone,3,13.0,Credit Card,Male,2.0,3,Others,4,Single,2,0,,12.0,12.0,8.0,298.33
+52589,0,18.0,Mobile Phone,2,10.0,Debit Card,Female,2.0,5,Fashion,3,Married,5,0,21.0,1.0,1.0,3.0,197.56
+52590,0,3.0,Computer,1,8.0,COD,Female,3.0,4,Mobile Phone,5,Single,1,0,16.0,0.0,1.0,7.0,149.68
+52591,0,,Computer,2,16.0,CC,Male,2.0,3,Mobile,1,Married,1,0,14.0,0.0,2.0,1.0,121.44999999999999
+52592,1,,Computer,2,14.0,UPI,Female,3.0,4,Mobile,1,Married,7,0,11.0,1.0,1.0,2.0,121.80000000000001
+52593,0,4.0,Mobile Phone,3,11.0,COD,Male,2.0,3,Laptop & Accessory,3,Married,2,0,19.0,1.0,1.0,2.0,183.46
+52594,0,0.0,Phone,1,14.0,CC,Female,3.0,3,Mobile,1,Single,2,0,11.0,0.0,1.0,4.0,134.45
+52595,1,0.0,Phone,3,15.0,E wallet,Female,,5,Mobile,4,Single,2,0,13.0,2.0,2.0,2.0,127.6
+52596,0,2.0,Computer,1,7.0,Debit Card,Male,3.0,1,Laptop & Accessory,3,Single,9,1,12.0,1.0,1.0,2.0,162.94
+52597,0,3.0,Mobile Phone,3,21.0,E wallet,Male,3.0,4,Fashion,5,Married,3,0,11.0,1.0,1.0,7.0,171.4
+52598,0,7.0,Phone,1,8.0,CC,Male,,1,Mobile,1,Married,1,1,14.0,1.0,1.0,2.0,129.32
+52599,0,6.0,Computer,3,8.0,E wallet,Female,3.0,3,Laptop & Accessory,4,Single,9,0,15.0,1.0,1.0,7.0,151.47
+52600,0,22.0,Phone,3,17.0,E wallet,Female,3.0,3,Laptop & Accessory,1,Single,4,0,12.0,0.0,1.0,4.0,145.07
